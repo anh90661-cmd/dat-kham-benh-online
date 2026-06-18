@@ -28,12 +28,15 @@
         .sidebar-footer { border-top: 1px solid #1e293b; padding-top: 20px; display: flex; align-items: center; gap: 12px; }
         .user-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal-600); }
         .main-content { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-.top-bar { height: 80px; background: white; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; }
+        .top-bar { height: 80px; background: white; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; }
         .live-indicator { display: flex; align-items: center; gap: 8px; background: var(--teal-50); color: var(--teal-700); padding: 8px 16px; border-radius: var(--radius-lg); font-size: 13px; font-weight: 700; }
         .live-dot { width: 8px; height: 8px; background: var(--emerald-500); border-radius: 50%; }
         .workspace-body { flex-grow: 1; padding: 40px; overflow-y: auto; background-color: #f8fafc; }
-        .app-section { display: none; opacity: 0; transform: translateY(15px); transition: var(--transition-smooth); }
-        .app-section.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        /* Chỉnh lại CSS hiển thị để phục vụ nhúng SPA */
+        .app-section { display: none; }
+        .app-section.active { display: block !important; }
+        
         .card { background: white; border-radius: var(--radius-lg); padding: 30px; border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); margin-bottom: 30px; }
         .toast-box { position: fixed; top: 30px; right: -420px; background: white; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-lg); border-left: 5px solid var(--teal-600); display: flex; align-items: center; gap: 15px; z-index: 9999; transition: right 0.4s ease; }
         .toast-box.active { right: 30px; }
@@ -51,8 +54,10 @@
         .chart-track { flex-grow: 1; height: 12px; background: var(--slate-100); border-radius: 10px; overflow: hidden; }
         .chart-bar { height: 100%; background: var(--teal-600); border-radius: 10px; width: 0%; transition: width 1s ease; }
         .chart-value { width: 50px; text-align: right; font-size: 13px; font-weight: 700; }
-        .doctors-flex-grid { grid-template-columns: repeat(3, 1fr); margin-bottom: 40px; }
-.doctor-profile-card { background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 24px; cursor: pointer; transition: var(--transition-smooth); }
+        
+        /* CSS chia hàng bác sĩ của Duy */
+        .doctors-flex-grid { grid-template-columns: repeat(2, 1fr); margin-bottom: 40px; }
+        .doctor-profile-card { background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 24px; cursor: pointer; transition: var(--transition-smooth); }
         .doctor-profile-card:hover { transform: translateY(-5px); border-color: var(--teal-600); }
         .doc-card-body { display: flex; gap: 20px; align-items: center; margin-bottom: 15px; }
         .doc-card-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
@@ -88,7 +93,7 @@
             </div>
             <div class="menu-group">
                 <div class="menu-label">Cổng Bệnh Nhân</div>
-<button class="menu-btn" onclick="navigateSPA('panel-booking', 'Đặt Lịch Hẹn Khám Trực Tuyến', this)">Đăng Ký Đặt Lịch</button>
+                <button class="menu-btn" onclick="navigateSPA('panel-booking', 'Đặt Lịch Hẹn Khám Trực Tuyến', this)">Đăng Ký Đặt Lịch</button>
                 <button class="menu-btn" onclick="navigateSPA('panel-history', 'Lịch Sử Đăng Ký Khám Bệnh', this)">Sổ Tay Lịch Hẹn (<span id="badgeUserCount">0</span>)</button>
             </div>
             <div class="menu-group">
@@ -109,7 +114,18 @@
         </div>
 
         <div class="workspace-body">
-            <div id="DYNAMIC_CONTENT_PLACEHOLDER"></div>
+            <!-- 1. Giao diện tổng quan Admin mặc định hiển thị trước -->
+            <div id="panel-dashboard" class="app-section active">
+                <div class="card"><h3>Chào mừng đến với hệ thống điều hành MEDICA</h3><p style="color:#64748b; margin-top:10px;">Vui lòng chọn các tính năng ở thanh điều hướng bên trái.</p></div>
+            </div>
+
+            <!-- 2. Không gian chứa code Đặt lịch và Lịch sử của Khương Duy (Sẽ nạp động) -->
+            <div id="patient-modules-container"></div>
+            
+            <!-- 3. Không gian chứa code của quản lý duyệt ca -->
+            <div id="panel-admin" class="app-section">
+                <div class="card"><h3>Cổng Phê Duyệt Hồ Sơ Nhân Viên</h3><p>Đang tải dữ liệu ca khám...</p></div>
+            </div>
         </div>
     </div>
 
@@ -118,16 +134,32 @@
             { id: "MĐ-4821", name: "Trần Anh Tuấn", phone: "0987112233", birth: "1995", department: "Khoa Tim Mạch", doctor: "GS.TS Nguyễn Văn A", date: "2026-06-20", time: "08:00 - 09:00", reason: "Đau thắt ngực về đêm", cost: 500000, status: "Chờ duyệt" }
         ];
 
-        window.addEventListener("DOMContentLoaded", () => { refreshCoreAnalytics(); renderApplicationTables(); });
+        // Tự động fetch tải file code của Khương Duy vào sườn chính khi mở trang web
+        window.addEventListener("DOMContentLoaded", () => { 
+            fetch('https://anh90661-cmd.github.io/dat-kham-benh-online/khuongduy15.html')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('patient-modules-container').innerHTML = html;
+                    refreshCoreAnalytics(); 
+                    renderApplicationTables(); 
+                })
+                .catch(err => console.error("Lỗi nạp file của Duy: ", err));
+        });
 
+        // Hàm điều hướng ẩn / hiện chuẩn SPA cho cả 2 bạn
         function navigateSPA(targetSectionId, viewTitle, buttonRef) {
             document.querySelectorAll(".app-section").forEach(sec => sec.classList.remove("active"));
             document.querySelectorAll(".menu-btn").forEach(btn => btn.classList.remove("active"));
+            
             const target = document.getElementById(targetSectionId);
-            if(target) target.classList.add("active");
+            if(target) {
+                target.classList.add("active");
+            }
             buttonRef.classList.add("active");
             document.getElementById("txtCurrentViewTitle").innerText = viewTitle;
-            renderApplicationTables(); refreshCoreAnalytics();
+            
+            if(typeof renderApplicationTables === "function") renderApplicationTables(); 
+            if(typeof refreshCoreAnalytics === "function") refreshCoreAnalytics();
         }
 
         function triggerNotification(title, message) {
@@ -137,6 +169,13 @@
             toast.classList.add("active");
             setTimeout(() => { toast.classList.remove("active"); }, 3000);
         }
+
+        // Tạo sẵn các hàm rỗng để file khuongduy15.js hoặc hệ thống gọi không bị lỗi sập script
+        function refreshCoreAnalytics() { console.log("Hệ thống cập nhật số liệu tổng."); }
+        function renderApplicationTables() { console.log("Hệ thống vẽ lại bảng dữ liệu."); }
     </script>
+    
+    <!-- Nhúng file logic xử lý tính năng đặt lịch của Nguyễn Khương Duy -->
+    <script src="./khuongduy15.js"></script>
 </body>
 </html>
