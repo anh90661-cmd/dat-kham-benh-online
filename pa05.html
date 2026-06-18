@@ -1,0 +1,28 @@
+<div id="panel-dashboard" class="app-section active">
+    <div class="metrics-grid">
+        <div class="metric-card"><div><h3>Tổng Lịch</h3><h2 id="statTotal">0</h2></div><div class="metric-icon-box m-indigo"><i class="fa-solid fa-layer-group"></i></div></div>
+        <div class="metric-card"><div><h3>Chờ Duyệt</h3><h2 id="statPending">0</h2></div><div class="metric-icon-box m-amber"><i class="fa-solid fa-hourglass"></i></div></div>
+        <div class="metric-card"><div><h3>Đã Duyệt</h3><h2 id="statApproved">0</h2></div><div class="metric-icon-box m-teal"><i class="fa-solid fa-circle-check"></i></div></div>
+        <div class="metric-card"><div><h3>Doanh Thu</h3><h2 id="statRevenue">0đ</h2></div><div class="metric-icon-box m-rose"><i class="fa-solid fa-wallet"></i></div></div>
+    </div>
+    <div class="chart-layout-grid">
+        <div class="card">
+            <h3>Mật Độ Theo Chuyên Khoa</h3>
+            <div class="bar-chart-container">
+                <div class="chart-row"><div class="chart-label">Khoa Tim Mạch</div><div class="chart-track"><div id="barTimMach" class="chart-bar"></div></div><div class="chart-value" id="valTimMach">0%</div></div>
+                <div class="chart-row"><div class="chart-label">Khoa Nhi Khoa</div><div class="chart-track"><div id="barNhi" class="chart-bar"></div></div><div class="chart-value" id="valNhi">0%</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="panel-admin" class="app-section">
+    <div class="card">
+        <div class="data-table-frame">
+            <table>
+                <thead><tr><th>Mã Đơn</th><th>Bệnh Nhân</th><th>Số Điện Thoại</th><th>Bác Sĩ</th><th>Lý Do</th><th>Hành Động</th></tr></thead>
+                <tbody id="domAdminTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
