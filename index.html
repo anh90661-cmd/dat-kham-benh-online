@@ -3,179 +3,1060 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Quản Trị MEDICA - DatLichKham2029</title>
+    <title>Hệ Thống Quản Trị & Đặt Lịch Khám Bệnh Đa Khoa Quốc Tế MEDICA</title>
+    <!-- Nhúng Google Fonts và FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* ==========================================================================
+           1. CORE SYSTEM STYLES (Màu sắc, Biến hệ thống, Thiết lập cấu trúc nền)
+           ========================================================================== */
         :root {
-            --teal-50: #f0fdfa; --teal-100: #ccfbf1; --teal-600: #0d9488; --teal-700: #0f766e; --teal-900: #134e4a;
-            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-700: #334155; --slate-900: #0f172a;
-            --emerald-500: #10b981; --rose-500: #f43f5e; --amber-500: #f59e0b; --sidebar-width: 280px;
-            --radius-md: 12px; --radius-lg: 20px; --transition-smooth: all 0.35s ease;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px -10px rgba(15, 118, 110, 0.15);
+            --teal-50: #f0fdfa;
+            --teal-100: #ccfbf1;
+            --teal-600: #0d9488;
+            --teal-700: #0f766e;
+            --teal-900: #134e4a;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+            --slate-900: #0f172a;
+            --emerald-500: #10b981;
+            --rose-500: #f43f5e;
+            --amber-500: #f59e0b;
+            --indigo-600: #4f46e5;
+            --sidebar-width: 280px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(15, 118, 110, 0.08), 0 8px 10px -6px rgba(0,0,0,0.03);
+            --shadow-lg: 0 20px 40px -10px rgba(15, 118, 110, 0.15);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--slate-100); color: var(--slate-900); display: flex; min-height: 100vh; overflow: hidden; }
-        .sidebar { width: var(--sidebar-width); background: var(--slate-900); color: white; display: flex; flex-direction: column; padding: 30px 20px; flex-shrink: 0; }
-        .sidebar-brand { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 800; color: white; margin-bottom: 40px; }
-        .sidebar-brand i { color: var(--teal-100); background: var(--teal-600); padding: 10px; border-radius: var(--radius-md); }
-        .menu-wrapper { flex-grow: 1; display: flex; flex-direction: column; gap: 25px; }
-        .menu-group { display: flex; flex-direction: column; gap: 6px; }
-        .menu-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #475569; letter-spacing: 1px; margin-left: 12px; }
-        .menu-btn { width: 100%; padding: 14px 16px; background: transparent; border: none; color: #94a3b8; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; transition: var(--transition-smooth); }
-        .menu-btn:hover, .menu-btn.active { background: var(--teal-600); color: white; }
-        .menu-badge { background: var(--rose-500); color: white; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-        .sidebar-footer { border-top: 1px solid #1e293b; padding-top: 20px; display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal-600); }
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .top-bar { height: 80px; background: white; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; }
-        .live-indicator { display: flex; align-items: center; gap: 8px; background: var(--teal-50); color: var(--teal-700); padding: 8px 16px; border-radius: var(--radius-lg); font-size: 13px; font-weight: 700; }
-        .live-dot { width: 8px; height: 8px; background: var(--emerald-500); border-radius: 50%; }
-        .workspace-body { flex-grow: 1; padding: 40px; overflow-y: auto; background-color: #f8fafc; }
-        
-        /* Chỉnh lại CSS hiển thị để phục vụ nhúng SPA */
-        .app-section { display: none; }
-        .app-section.active { display: block !important; }
-        
-        .card { background: white; border-radius: var(--radius-lg); padding: 30px; border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); margin-bottom: 30px; }
-        .toast-box { position: fixed; top: 30px; right: -420px; background: white; border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-lg); border-left: 5px solid var(--teal-600); display: flex; align-items: center; gap: 15px; z-index: 9999; transition: right 0.4s ease; }
-        .toast-box.active { right: 30px; }
-        
-        /* CSS LAYOUT GRID */
-        .metrics-grid, .chart-layout-grid, .doctors-flex-grid, .form-interactive-grid { display: grid; gap: 25px; }
-        .metrics-grid { grid-template-columns: repeat(4, 1fr); margin-bottom: 30px; }
-        .metric-card { background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 24px; display: flex; align-items: center; justify-content: space-between; }
-        .metric-icon-box { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-        .m-teal { background: #ccfbf1; color: #0f766e; } .m-indigo { background: #e0e7ff; color: #4f46e5; } .m-amber { background: #fef3c7; color: #d97706; } .m-rose { background: #ffe4e6; color: #e11d48; }
-        .chart-layout-grid { grid-template-columns: 1.6fr 1fr; }
-        .bar-chart-container { margin-top: 25px; display: flex; flex-direction: column; gap: 16px; }
-        .chart-row { display: flex; align-items: center; gap: 15px; }
-        .chart-label { width: 100px; font-size: 13px; font-weight: 600; }
-        .chart-track { flex-grow: 1; height: 12px; background: var(--slate-100); border-radius: 10px; overflow: hidden; }
-        .chart-bar { height: 100%; background: var(--teal-600); border-radius: 10px; width: 0%; transition: width 1s ease; }
-        .chart-value { width: 50px; text-align: right; font-size: 13px; font-weight: 700; }
-        
-        /* CSS chia hàng bác sĩ của Duy */
-        .doctors-flex-grid { grid-template-columns: repeat(2, 1fr); margin-bottom: 40px; }
-        .doctor-profile-card { background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 24px; cursor: pointer; transition: var(--transition-smooth); }
-        .doctor-profile-card:hover { transform: translateY(-5px); border-color: var(--teal-600); }
-        .doc-card-body { display: flex; gap: 20px; align-items: center; margin-bottom: 15px; }
-        .doc-card-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
-        .form-interactive-grid { grid-template-columns: repeat(3, 1fr); }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.2px;
+        }
+
+        body {
+            background-color: var(--slate-100);
+            color: var(--slate-900);
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Tùy biến thanh cuộn hệ thống */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--slate-100); }
+        ::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--teal-600); }
+
+        /* ==========================================================================
+           2. SIDEBAR DIỀU HƯỚNG CAO CẤP (Layout Menu Bên Trái)
+           ========================================================================== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--slate-900);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 4px 0 25px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            padding-left: 10px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-brand i {
+            color: var(--teal-100);
+            background: linear-gradient(135deg, var(--teal-600), var(--secondary));
+            padding: 10px;
+            border-radius: var(--radius-md);
+            font-size: 20px;
+        }
+
+        .menu-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .menu-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #475569;
+            letter-spacing: 1px;
+            margin-left: 12px;
+            margin-bottom: 6px;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 14px 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition-smooth);
+        }
+
+        .menu-btn-inner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .menu-btn i { font-size: 18px; }
+
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .menu-btn.active {
+            background: linear-gradient(135deg, var(--teal-600), var(--teal-700));
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.4);
+        }
+
+        .menu-badge {
+            background: var(--rose-500);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #1e293b;
+            padding-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--teal-600);
+        }
+
+        .user-meta h4 { font-size: 14px; font-weight: 700; color: white;}
+        .user-meta p { font-size: 12px; color: #64748b; }
+
+        /* ==========================================================================
+           3. MAIN PANELS & WORKSPACE (Khung Chứa Nội Dung Bên Phải)
+           ========================================================================== */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            height: 80px;
+            background: white;
+            border-bottom: 1px solid var(--slate-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+
+        .top-bar-left h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--teal-50);
+            color: var(--teal-700);
+            padding: 8px 16px;
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .live-dot {
+            width: 8px; height: 8px;
+            background: var(--emerald-500);
+            border-radius: 50%;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .workspace-body {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #f8fafc;
+        }
+
+        /* Điều hướng ẩn hiện các Section SPA */
+        .app-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: var(--transition-smooth);
+        }
+
+        .app-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* LAYOUT THÀNH PHẦN CARD */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            border: 1px solid var(--slate-200);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+        }
+
+        /* ==========================================================================
+           4. PHÂN HỆ 1: DASHBOARD (Thống kê và Biểu đồ Doanh Thu mô phỏng)
+           ========================================================================== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+        }
+
+        .metric-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+        .metric-info h3 { font-size: 13px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;}
+        .metric-info h2 { font-size: 28px; font-weight: 800; color: var(--slate-900); }
+
+        .metric-icon-box {
+            width: 56px; height: 56px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+
+        /* Màu sắc động cho thẻ số liệu */
+        .m-teal { background: #ccfbf1; color: #0f766e; }
+        .m-indigo { background: #e0e7ff; color: #4f46e5; }
+        .m-amber { background: #fef3c7; color: #d97706; }
+        .m-rose { background: #ffe4e6; color: #e11d48; }
+
+        /* Khung chứa biểu đồ thanh ngang mô phỏng */
+        .chart-layout-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 25px;
+        }
+
+        .bar-chart-container {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chart-label { width: 100px; font-size: 13px; font-weight: 600; color: var(--slate-700); }
+        .chart-track { flex-grow: 1; height: 12px; background: var(--slate-100); border-radius: 10px; overflow: hidden; position: relative; }
+        .chart-bar { height: 100%; background: linear-gradient(90deg, var(--teal-600), var(--secondary)); border-radius: 10px; width: 0%; transition: width 1s ease-in-out; }
+        .chart-value { width: 50px; text-align: right; font-size: 13px; font-weight: 700; color: var(--slate-900); }
+
+        /* ==========================================================================
+           5. PHÂN HỆ 2: ĐẶT LỊCH HẸN KHÁM (Giao diện Bệnh Nhân + Thẻ Bác Sĩ)
+           ========================================================================== */
+        .doctor-showcase-title {
+            font-size: 16px; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-bottom: 20px;
+        }
+
+        .doctors-flex-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .doctor-profile-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            position: relative;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .doctor-profile-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--teal-600);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .doc-badge-status {
+            position: absolute; top: 20px; right: 20px;
+            background: #d1fae5; color: #065f46;
+            font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+        }
+
+        .doc-card-body {
+            display: flex; gap: 20px; align-items: center; margin-bottom: 20px;
+        }
+
+        .doc-card-img {
+            width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--teal-100);
+        }
+
+        .doc-card-meta h3 { font-size: 16px; font-weight: 700; color: var(--slate-900); margin-bottom: 4px; }
+        .doc-card-meta span { font-size: 12px; font-weight: 600; color: var(--teal-600); background: var(--teal-50); padding: 3px 10px; border-radius: 20px; }
+
+        .doc-card-desc { font-size: 13px; color: #64748b; line-height: 1.6; }
+
+        .doc-card-footer {
+            margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--slate-100);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .doc-rating { font-size: 13px; font-weight: 700; color: var(--amber-500); }
+        .doc-action-text { font-size: 13px; font-weight: 700; color: var(--teal-600); display: flex; align-items: center; gap: 6px; }
+
+        /* FORM NHẬP LIỆU GRID NÂNG CAO */
+        .form-interactive-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .span-2 { grid-column: span 2; }
         .span-3 { grid-column: span 3; }
+
         .input-container { display: flex; flex-direction: column; gap: 8px; }
+        .input-container label { font-size: 13px; font-weight: 700; color: var(--slate-700); }
+
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 16px; color: #94a3b8; }
-        .input-wrapper input, .input-wrapper select, .input-wrapper textarea { width: 100%; padding: 14px 16px 14px 48px; border: 1px solid var(--slate-200); border-radius: 12px; background: var(--slate-50); outline: none; }
-        .btn-submit-pro { width: 100%; padding: 16px; background: var(--teal-600); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        .data-table-frame { width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid var(--slate-200); }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 18px 20px; text-align: left; }
-        th { background: var(--slate-50); font-weight: 700; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--slate-200); }
-        td { border-bottom: 1px solid var(--slate-200); }
-        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-        .sp-pending { background: #fef3c7; color: #b45309; } .sp-success { background: #d1fae5; color: #065f46; }
-        .btn-table-action { padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: var(--teal-50); color: var(--teal-700); }
+        .input-wrapper i { position: absolute; left: 16px; color: #94a3b8; font-size: 16px; transition: var(--transition-smooth); }
+
+        .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-md);
+            background: var(--slate-50);
+            font-size: 14px; color: var(--slate-900); outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus, .input-wrapper textarea:focus {
+            border-color: var(--teal-600); background: white;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12);
+        }
+
+        .input-wrapper input:focus + i, .input-wrapper select:focus + i, .input-wrapper textarea:focus + i {
+            color: var(--teal-600);
+        }
+
+        .btn-submit-pro {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--teal-600), var(--teal-700));
+            color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: var(--transition-smooth); box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.25);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+
+        .btn-submit-pro:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -5px rgba(13, 148, 136, 0.4); }
+
+        /* ==========================================================================
+           6. PHÂN HỆ 3 & 4: DANH SÁCH BẢNG DỮ LIỆU ĐẸP (Quản lý và Lọc tìm kiếm)
+           ========================================================================== */
+        .table-filter-bar {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 20px;
+        }
+
+        .search-box-wrapper { width: 350px; }
+
+        .data-table-frame {
+            width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--slate-200);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; background: white; }
+        th { background: var(--slate-50); padding: 18px 20px; font-weight: 700; color: #475569; border-bottom: 2px solid var(--slate-200); text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        td { padding: 18px 20px; border-bottom: 1px solid var(--slate-200); color: var(--slate-700); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: var(--slate-50); }
+
+        /* Kiểu trạng thái Label dạng viên thuốc */
+        .status-pill {
+            padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .status-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+        .sp-pending { background: #fef3c7; color: #b45309; }
+        .sp-pending::before { background: var(--amber-500); }
+        .sp-success { background: #d1fae5; color: #065f46; }
+        .sp-success::before { background: var(--emerald-500); }
+
+        .btn-table-action {
+            padding: 8px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: var(--transition-smooth); display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-tbl-approve { background: var(--teal-50); color: var(--teal-700); }
+        .btn-tbl-approve:hover { background: var(--teal-600); color: white; }
+
+        /* ==========================================================================
+           7. HỘP TOAST THÔNG BÁO VÀ TIỆN ÍCH PHỤ
+           ========================================================================== */
+        .toast-box {
+            position: fixed; top: 30px; right: -420px; background: white; border-radius: var(--radius-md);
+            padding: 20px; box-shadow: var(--shadow-lg); border-left: 5px solid var(--teal-600);
+            display: flex; align-items: center; gap: 15px; z-index: 9999;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .toast-box.active { right: 30px; }
     </style>
 </head>
 <body>
 
+    <!-- 1. HỘP THÔNG BÁO CHUNG -->
     <div id="globalToast" class="toast-box">
-        <div><strong style="display:block; font-size:14px;" id="toastTitle">Hệ thống</strong><span style="font-size:13px; color:#64748b;" id="toastMsg">Thao tác thành công!</span></div>
+        <div style="background: var(--teal-50); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-bell-check" style="color: var(--teal-600); font-size: 18px;"></i>
+        </div>
+        <div>
+            <strong style="display:block; font-size:14px; color: var(--slate-900)" id="toastTitle">Hệ thống</strong>
+            <span style="font-size:13px; color:#64748b;" id="toastMsg">Thao tác xử lý dữ liệu hoàn tất!</span>
+        </div>
     </div>
 
+    <!-- 2. LAYOUT CHÍNH: MENU SIDEBAR BÊN TRÁI -->
     <div class="sidebar">
-        <div class="sidebar-brand"><i class="fa-solid fa-hospital-user"></i> MEDICA CORE</div>
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-hospital-user"></i> MEDICA CORE
+        </div>
+        
         <div class="menu-wrapper">
+            <!-- Nhóm 1: Giám sát tổng quan -->
             <div class="menu-group">
                 <div class="menu-label">Phân Tích Trung Tâm</div>
-                <button class="menu-btn active" onclick="navigateSPA('panel-dashboard', 'Bảng Thống Kê Giám Sát', this)">Tổng Quan Hệ Thống</button>
+                <button class="menu-btn active" onclick="navigateSPA('panel-dashboard', 'Bảng Thống Kê Giám Sát', this)">
+                    <div class="menu-btn-inner"><i class="fa-solid fa-chart-pie-simple"></i>Tổng Quan Hệ Thống</div>
+                </button>
             </div>
+
+            <!-- Nhóm 2: Giao diện khách hàng -->
             <div class="menu-group">
                 <div class="menu-label">Cổng Bệnh Nhân</div>
-                <button class="menu-btn" onclick="navigateSPA('panel-booking', 'Đặt Lịch Hẹn Khám Trực Tuyến', this)">Đăng Ký Đặt Lịch</button>
-                <button class="menu-btn" onclick="navigateSPA('panel-history', 'Lịch Sử Đăng Ký Khám Bệnh', this)">Sổ Tay Lịch Hẹn (<span id="badgeUserCount">0</span>)</button>
+                <button class="menu-btn" onclick="navigateSPA('panel-booking', 'Đặt Lịch Hẹn Khám Trực Tuyến', this)">
+                    <div class="menu-btn-inner"><i class="fa-solid fa-calendar-heart"></i>Đăng Ký Đặt Lịch</div>
+                </button>
+                <button class="menu-btn" onclick="navigateSPA('panel-history', 'Lịch Sử Đăng Ký Khám Bệnh', this)">
+                    <div class="menu-btn-inner"><i class="fa-solid fa-rectangle-history"></i>Sổ Tay Lịch Hẹn</div>
+                    <span class="menu-badge" id="badgeUserCount">0</span>
+                </button>
             </div>
+
+            <!-- Nhóm 3: Giao diện nội bộ -->
             <div class="menu-group">
-                <div class="menu-label">Cổng Nhân Viên</div>
-                <button class="menu-btn" onclick="navigateSPA('panel-admin', 'Phê Duyệt Hồ Sơ Đặt Lịch', this)">Quản Lý Duyệt Ca (<span id="badgePendingCount">0</span>)</button>
+                <div class="menu-label">Cổng Nhân Viên / Admin</div>
+                <button class="menu-btn" onclick="navigateSPA('panel-admin', 'Phê Duyệt Hồ Sơ Đặt Lịch', this)">
+                    <div class="menu-btn-inner"><i class="fa-solid fa-user-shield"></i>Quản Lý Duyệt Ca</div>
+                    <span class="menu-badge" style="background:var(--amber-500)" id="badgePendingCount">0</span>
+                </button>
             </div>
         </div>
+
+        <!-- Khung dưới cùng của Menu -->
         <div class="sidebar-footer">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" class="user-avatar">
-            <div class="user-meta"><h4>Tiến Anh</h4><p>Nhóm Trưởng / Admin</p></div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="user-avatar" alt="Admin">
+            <div class="user-meta">
+                <h4>Khuơng Duy</h4>
+                <p>Quản Trị Viên Nhóm</p>
+            </div>
         </div>
     </div>
 
+    <!-- 3. LAYOUT CHÍNH: KHÔNG GIAN LÀM VIỆC BÊN PHẢI -->
     <div class="main-content">
+        <!-- Thanh công cụ trên cùng -->
         <div class="top-bar">
-            <div class="top-bar-left"><h2 id="txtCurrentViewTitle">Bảng Thống Kê Giám Sát</h2></div>
-            <div class="top-bar-right"><div class="live-indicator"><div class="live-dot"></div> Hệ Thống Trực Tuyến</div></div>
+            <div class="top-bar-left">
+                <h2 id="txtCurrentViewTitle">Bảng Thống Kê Giám Sát</h2>
+            </div>
+            <div class="top-bar-right">
+                <div class="live-indicator">
+                    <div class="live-dot"></div> Đang Đồng Bộ MongoDB Atlas (Mô phỏng)
+                </div>
+            </div>
         </div>
 
+        <!-- Không gian thân nội dung chứa các phân hệ ứng dụng -->
         <div class="workspace-body">
-            <!-- 1. Giao diện tổng quan Admin mặc định hiển thị trước -->
+
+            <!-- ================= SECTION 1: DASHBOARD MANAGEMENT ================= -->
             <div id="panel-dashboard" class="app-section active">
-                <div class="card"><h3>Chào mừng đến với hệ thống điều hành MEDICA</h3><p style="color:#64748b; margin-top:10px;">Vui lòng chọn các tính năng ở thanh điều hướng bên trái.</p></div>
+                <!-- Hàng thẻ chỉ số số liệu -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h3>Tổng Lịch Đặt</h3>
+                            <h2 id="statTotal">0</h2>
+                        </div>
+                        <div class="metric-icon-box m-indigo"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h3>Hồ Sơ Chờ Duyệt</h3>
+                            <h2 id="statPending">0</h2>
+                        </div>
+                        <div class="metric-icon-box m-amber"><i class="fa-solid fa-hourglass-clock"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h3>Lịch Đã Xác Nhận</h3>
+                            <h2 id="statApproved">0</h2>
+                        </div>
+                        <div class="metric-icon-box m-teal"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h3>Doanh Thu Dự Kiến</h3>
+                            <h2 id="statRevenue">0đ</h2>
+                        </div>
+                        <div class="metric-icon-box m-rose"><i class="fa-solid fa-wallet"></i></div>
+                    </div>
+                </div>
+
+                <!-- Đồ thị phân tích hiệu suất chuyên khoa dữ liệu dạng thanh ngang -->
+                <div class="chart-layout-grid">
+                    <div class="card">
+                        <h3 style="font-size: 16px; font-weight:700; margin-bottom: 5px;">Mật Độ Ca Khám Theo Chuyên Khoa</h3>
+                        <p style="font-size: 13px; color:#64748b; margin-bottom: 20px;">Dữ liệu phân tích tỉ lệ ca bệnh đăng ký trực tuyến.</p>
+                        
+                        <div class="bar-chart-container">
+                            <div class="chart-row">
+                                <div class="chart-label">Khoa Tim Mạch</div>
+                                <div class="chart-track"><div id="barTimMach" class="chart-bar"></div></div>
+                                <div class="chart-value" id="valTimMach">0%</div>
+                            </div>
+                            <div class="chart-row">
+                                <div class="chart-label">Khoa Nhi Khoa</div>
+                                <div class="chart-track"><div id="barNhi" class="chart-bar"></div></div>
+                                <div class="chart-value" id="valNhi">0%</div>
+                            </div>
+                            <div class="chart-row">
+                                <div class="chart-label">Răng Hàm Mặt</div>
+                                <div class="chart-track"><div id="barRang" class="chart-bar"></div></div>
+                                <div class="chart-value" id="valRang">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="display:flex; flex-direction:column; justify-content:center; text-align:center;">
+                        <i class="fa-solid fa-shield-virus" style="font-size:48px; color: var(--teal-600); margin-bottom: 15px;"></i>
+                        <h3 style="font-size:16px; font-weight:700; margin-bottom: 8px;">An Toàn & Bảo Mật</h3>
+                        <p style="font-size:13px; color:#64748b; line-height: 1.6;">Toàn bộ hồ sơ bệnh án được đóng gói định dạng thực thể hóa JSON nghiêm ngặt trước khi truyền tải.</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- 2. Không gian chứa code Đặt lịch và Lịch sử của Khương Duy (Sẽ nạp động) -->
-            <div id="patient-modules-container"></div>
-            
-            <!-- 3. Không gian chứa code của quản lý duyệt ca -->
-            <div id="panel-admin" class="app-section">
-                <div class="card"><h3>Cổng Phê Duyệt Hồ Sơ Nhân Viên</h3><p>Đang tải dữ liệu ca khám...</p></div>
+            <!-- ================= SECTION 2: BOOKING SYSTEM FORM ================= -->
+            <div id="panel-booking" class="app-section">
+                <!-- Thẻ hiển thị nhanh cấu hình các bác sĩ hiện có kèm ảnh -->
+                <div class="doctor-showcase-title">Bác sĩ chuyên khoa đang trực tuyến</div>
+                <div class="doctors-flex-grid">
+                    <div class="doctor-profile-card" onclick="autoSelectDoctor('GS.TS Nguyễn Khương Duy', 'Khoa Tim Mạch')">
+                        <span class="doc-badge-status">Hôm nay</span>
+                        <div class="doc-card-body">
+                            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=150&q=80" class="doc-card-img" alt="Doctor">
+                            <div class="doc-card-meta">
+                                <h3>GS.TS Nguyễn Văn A</h3>
+                                <span>Khoa Tim Mạch</span>
+                            </div>
+                        </div>
+                        <p class="doc-card-desc">Chuyên gia cố vấn tim mạch cao cấp, Viện sĩ hiệp hội Tim mạch học lâm sàng Quốc Tế.</p>
+                        <div class="doc-card-footer">
+                            <div class="doc-rating"><i class="fa-solid fa-star"></i> 4.9 (240 đánh giá)</div>
+                            <div class="doc-action-text">Đặt lịch nhanh <i class="fa-solid fa-arrow-right-long"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="doctor-profile-card" onclick="autoSelectDoctor('Thạc sĩ Trần Khánh Ly', 'Khoa Nhi Khoa')">
+                        <span class="doc-badge-status">Hôm nay</span>
+                        <div class="doc-card-body">
+                            <img src="https://images.unsplash.com/photo-1594824813573-246434e33963?auto=format&fit=crop&w=150&q=80" class="doc-card-img" alt="Doctor">
+                            <div class="doc-card-meta">
+                                <h3>Thạc sĩ Trần Thị B</h3>
+                                <span>Khoa Nhi Khoa</span>
+                            </div>
+                        </div>
+                        <p class="doc-card-desc">Hơn 12 năm chăm sóc và xử lý chuyên khoa nhi tổng quát, tâm lý học trẻ em xuất sắc.</p>
+                        <div class="doc-card-footer">
+                            <div class="doc-rating"><i class="fa-solid fa-star"></i> 5.0 (185 đánh giá)</div>
+                            <div class="doc-action-text">Đặt lịch nhanh <i class="fa-solid fa-arrow-right-long"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="doctor-profile-card" onclick="autoSelectDoctor('Bác sĩ Lê Tuấn Yên', 'Răng Hàm Mặt')">
+                        <span class="doc-badge-status" style="background:#e0f2fe; color:#0369a1;">Ngày mai</span>
+                        <div class="doc-card-body">
+                            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=150&q=80" class="doc-card-img" alt="Doctor">
+                            <div class="doc-card-meta">
+                                <h3>Bác sĩ Lê Văn C</h3>
+                                <span>Răng Hàm Mặt</span>
+                            </div>
+                        </div>
+                        <p class="doc-card-desc">Chuyên gia thiết kế nụ cười, phẫu thuật chỉnh hình nha thẩm mỹ kỹ thuật số 3D.</p>
+                        <div class="doc-card-footer">
+                            <div class="doc-rating"><i class="fa-solid fa-star"></i> 4.8 (92 đánh giá)</div>
+                            <div class="doc-action-text">Đặt lịch nhanh <i class="fa-solid fa-arrow-right-long"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Đăng Ký Đặt Lịch Hẹn Khám Nâng Cao -->
+                <div class="card">
+                    <form id="formProRegistration">
+                        <div class="form-interactive-grid">
+                            <div class="input-container">
+                                <label>Họ tên đầy đủ bệnh nhân</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-address-card"></i>
+                                    <input type="text" id="iptName" placeholder="Nhập tên người khám bệnh..." required>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <label>Số điện thoại liên lạc</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-phone-rotary"></i>
+                                    <input type="tel" id="iptPhone" placeholder="Số điện thoại di động..." required>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <label>Năm sinh</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-calendar-heart"></i>
+                                    <input type="number" id="iptBirth" min="1900" max="2026" placeholder="Ví dụ: 2006" required>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <label>Lựa chọn chuyên khoa</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-stethoscope"></i>
+                                    <select id="iptDept" required>
+                                        <option value="">-- Chọn khoa điều trị --</option>
+                                        <option value="Khoa Tim Mạch">Khoa Tim Mạch (Phí: 500.000đ)</option>
+                                        <option value="Khoa Nhi Khoa">Khoa Nhi Khoa (Phí: 300.000đ)</option>
+                                        <option value="Răng Hàm Mặt">Răng Hàm Mặt (Phí: 400.000đ)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <label>Bác sĩ tiếp nhận ca</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-user-doctor-hair"></i>
+                                    <select id="iptDoctor" required>
+                                        <option value="">-- Chọn bác sĩ trực ca --</option>
+                                        <option value="GS.TS Nguyễn Văn A">GS.TS Nguyễn Văn A</option>
+                                        <option value="Thạc sĩ Trần Thị B">Thạc sĩ Trần Thị B</option>
+                                        <option value="Bác sĩ Lê Văn C">Bác sĩ Lê Văn C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="form-interactive-grid" style="gap:15px; grid-template-columns: 1.2fr 1fr;">
+                                    <div class="input-container">
+                                        <label>Ngày khám</label>
+                                        <div class="input-wrapper"><input type="date" id="iptDate" required style="padding-left:15px;"></div>
+                                    </div>
+                                    <div class="input-container">
+                                        <label>Khung giờ</label>
+                                        <div class="input-wrapper">
+                                            <select id="iptTime" required style="padding-left:15px;">
+                                                <option value="08:00 - 09:00">08:00 AM</option>
+                                                <option value="09:00 - 10:00">09:00 AM</option>
+                                                <option value="14:00 - 15:00">14:00 PM</option>
+                                                <option value="15:00 - 16:00">15:00 PM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-container span-3">
+                                <label>Lý do nhập viện / Chẩn đoán triệu chứng ban đầu</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-notes-medical" style="top:18px"></i>
+                                    <textarea id="iptReason" rows="3" placeholder="Mô tả cụ thể trạng thái sức khỏe hiện tại của bạn tại đây..." required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit-pro"><i class="fa-solid fa-badge-check"></i> Xác Nhận Tạo Hồ Sơ Hẹn Khám</button>
+                    </form>
+                </div>
             </div>
+
+            <!-- ================= SECTION 3: PATIENT HISTORY TIMELINE ================= -->
+            <div id="panel-history" class="app-section">
+                <div class="card">
+                    <div class="table-filter-bar">
+                        <h3 style="font-size:16px; font-weight:700;">Nhật Ký Phiếu Đặt Hẹn Cá Nhân</h3>
+                        <div class="search-box-wrapper">
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="searchHistory" onkeyup="filterHistoryTable()" placeholder="Tìm nhanh theo tên bác sĩ hoặc mã đơn...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="data-table-frame">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã Định Danh</th>
+                                    <th>Bác Sĩ Điều Trị</th>
+                                    <th>Khoa Khám</th>
+                                    <th>Ngày Hẹn Ca</th>
+                                    <th>Khung Giờ</th>
+                                    <th>Trạng Thái Hệ Thống</th>
+                                </tr>
+                            </thead>
+                            <tbody id="domHistoryTableBody">
+                                <!-- Điền tự động thông qua Javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= SECTION 4: ADMIN APPROVAL PANEL ================= -->
+            <div id="panel-admin" class="app-section">
+                <div class="card">
+                    <div class="table-filter-bar">
+                        <h3 style="font-size:16px; font-weight:700;">Hàng Đợi Duyệt Ca Khám Trực Tuyến</h3>
+                        <div style="font-size:13px; color:#64748b; font-weight:600;"><i class="fa-solid fa-user-gear"></i> Quyền Quản Trị Hệ Thống Tối Cao</div>
+                    </div>
+                    <div class="data-table-frame">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã Đơn</th>
+                                    <th>Tên Bệnh Nhân</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Bác Sĩ Phụ Trách</th>
+                                    <th>Lý Do Ghi Chú</th>
+                                    <th>Hành Động Phê Duyệt</th>
+                                </tr>
+                            </thead>
+                            <tbody id="domAdminTableBody">
+                                <!-- Điền tự động thông qua Javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
+    <!-- ==========================================================================
+       8. CORE JAVASCRIPT SYSTEM ENGINE (Quản lý trạng thái, Thiết lập luồng dữ liệu)
+       ========================================================================== */ -->
     <script>
+        // Mảng cấu trúc dữ liệu mô phỏng Cơ sở dữ liệu NoSQL (Dữ liệu ban đầu mặc định)
         let localDatabaseStore = [
-            { id: "MĐ-4821", name: "Trần Anh Tuấn", phone: "0987112233", birth: "1995", department: "Khoa Tim Mạch", doctor: "GS.TS Nguyễn Văn A", date: "2026-06-20", time: "08:00 - 09:00", reason: "Đau thắt ngực về đêm", cost: 500000, status: "Chờ duyệt" }
+            {
+                id: "MĐ-4821",
+                name: "Trần Anh Tuấn",
+                phone: "0987112233",
+                birth: "1995",
+                department: "Khoa Tim Mạch",
+                doctor: "GS.TS Nguyễn Văn A",
+                date: "2026-06-20",
+                time: "08:00 - 09:00",
+                reason: "Thường xuyên có hiện tượng đau thắt ngực về đêm",
+                cost: 500000,
+                status: "Chờ duyệt"
+            },
+            {
+                id: "MĐ-9312",
+                name: "Phạm Minh Quang",
+                phone: "0912445566",
+                birth: "2018",
+                department: "Khoa Nhi Khoa",
+                doctor: "Thạc sĩ Trần Thị B",
+                date: "2026-06-18",
+                time: "14:00 - 15:00",
+                reason: "Ho khan kéo dài kèm sốt nhẹ ban đêm",
+                cost: 300000,
+                status: "Đã xác nhận"
+            }
         ];
 
-        // Tự động fetch tải file code của Khương Duy vào sườn chính khi mở trang web
-        window.addEventListener("DOMContentLoaded", () => { 
-            fetch('https://anh90661-cmd.github.io/dat-kham-benh-online/khuongduy15.html')
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById('patient-modules-container').innerHTML = html;
-                    refreshCoreAnalytics(); 
-                    renderApplicationTables(); 
-                })
-                .catch(err => console.error("Lỗi nạp file của Duy: ", err));
+        // Khởi động các cấu phần khi tải xong trang web
+        window.addEventListener("DOMContentLoaded", () => {
+            refreshCoreAnalytics();
+            renderApplicationTables();
         });
 
-        // Hàm điều hướng ẩn / hiện chuẩn SPA cho cả 2 bạn
+        // 1. Công cụ chuyển trang Single Page Application (SPA) mượt mà
         function navigateSPA(targetSectionId, viewTitle, buttonRef) {
-            document.querySelectorAll(".app-section").forEach(sec => sec.classList.remove("active"));
-            document.querySelectorAll(".menu-btn").forEach(btn => btn.classList.remove("active"));
-            
-            const target = document.getElementById(targetSectionId);
-            if(target) {
-                target.classList.add("active");
-            }
+            document.querySelectorAll(".app-section").forEach(section => {
+                section.classList.remove("active");
+            });
+            document.querySelectorAll(".menu-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            const targetSection = document.getElementById(targetSectionId);
+            targetSection.classList.add("active");
             buttonRef.classList.add("active");
+            
             document.getElementById("txtCurrentViewTitle").innerText = viewTitle;
             
-            if(typeof renderApplicationTables === "function") renderApplicationTables(); 
-            if(typeof refreshCoreAnalytics === "function") refreshCoreAnalytics();
+            renderApplicationTables();
+            refreshCoreAnalytics();
         }
 
+        // 2. Chức năng thông minh: Click vào thẻ ảnh bác sĩ tự điền form nhanh
+        function autoSelectDoctor(docName, deptName) {
+            document.getElementById("iptDept").value = deptName;
+            document.getElementById("iptDoctor").value = docName;
+            
+            triggerNotification("Hệ thống thông minh", `Đã thiết lập Bác sĩ phụ trách: ${docName}`);
+            
+            // Cuộn trang mượt xuống khu vực Form nhập dữ liệu
+            document.getElementById("formProRegistration").scrollIntoView({ behavior: "smooth" });
+        }
+
+        // 3. Công cụ xử lý Form và Gom dữ liệu đóng gói JSON gửi vào Database
+        document.getElementById("formProRegistration").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const selectedDept = document.getElementById("iptDept").value;
+            let costMapping = 300000; // Giá mặc định ca nhi khoa
+            if(selectedDept === "Khoa Tim Mạch") costMapping = 500000;
+            if(selectedDept === "Răng Hàm Mặt") costMapping = 400000;
+
+            const newRecord = {
+                id: "MĐ-" + Math.floor(1000 + Math.random() * 9000),
+                name: document.getElementById("iptName").value,
+                phone: document.getElementById("iptPhone").value,
+                birth: document.getElementById("iptBirth").value,
+                department: selectedDept,
+                doctor: document.getElementById("iptDoctor").value,
+                date: document.getElementById("iptDate").value,
+                time: document.getElementById("iptTime").value,
+                reason: document.getElementById("iptReason").value,
+                cost: costMapping,
+                status: "Chờ duyệt"
+            };
+
+            localDatabaseStore.push(newRecord);
+            
+            triggerNotification("Đặt lịch thành công!", "Mã đơn của bạn đang được đẩy lên hàng đợi phê duyệt.");
+            document.getElementById("formProRegistration").reset();
+            
+            refreshCoreAnalytics();
+        });
+
+        // 4. Cơ chế Render vẽ lại toàn bộ các bảng dữ liệu trên giao diện ứng dụng
+        function renderApplicationTables() {
+            const historyBody = document.getElementById("domHistoryTableBody");
+            const adminBody = document.getElementById("domAdminTableBody");
+
+            historyBody.innerHTML = "";
+            adminBody.innerHTML = "";
+
+            if(localDatabaseStore.length === 0) {
+                historyBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">Chưa có dữ liệu lịch hẹn nào trong bộ lưu trữ.</td></tr>`;
+                adminBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">Hàng đợi rỗng. Không có ca nào cần xử lý.</td></tr>`;
+                return;
+            }
+
+            localDatabaseStore.forEach((record, index) => {
+                // Render bảng Sổ tay lịch hẹn bệnh nhân
+                let badgeClass = record.status === "Chờ duyệt" ? "sp-pending" : "sp-success";
+                historyBody.innerHTML += `
+                    <tr>
+                        <td><span style="font-weight:700; color:var(--slate-900);">${record.id}</span></td>
+                        <td><span style="font-weight:600;">${record.doctor}</span></td>
+                        <td>${record.department}</td>
+                        <td>${record.date}</td>
+                        <td><span style="font-weight:600; color:var(--teal-700);">${record.time}</span></td>
+                        <td><span class="status-pill ${badgeClass}">${record.status}</span></td>
+                    </tr>
+                `;
+
+                // Render bảng kiểm soát phê duyệt hồ sơ dành cho Admin
+                if(record.status === "Chờ duyệt") {
+                    adminBody.innerHTML += `
+                        <tr>
+                            <td><span style="font-weight:700;">${record.id}</span></td>
+                            <td><span style="font-weight:700; color:var(--slate-900);">${record.name}</span></td>
+                            <td><span style="font-weight:600;">${record.phone}</span></td>
+                            <td>${record.doctor}</td>
+                            <td><em style="font-size:13px; color:#64748b;">"${record.reason}"</em></td>
+                            <td>
+                                <button class="btn-table-action btn-body-approve btn-tbl-approve" onclick="executeApproveAction(${index})">
+                                    <i class="fa-solid fa-circle-check"></i> Phê Duyệt Ca
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if(adminBody.innerHTML === "") {
+                adminBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--emerald-500); font-weight:700; padding:30px;"><i class="fa-solid fa-sparkles"></i> Tuyệt vời! Toàn bộ các ca bệnh trực tuyến đã được phê duyệt sạch sẽ!</td></tr>`;
+            }
+        }
+
+        // 5. Chức năng phê duyệt ca khám của quản trị viên hệ thống
+        function executeApproveAction(targetIndex) {
+            localDatabaseStore[targetIndex].status = "Đã xác nhận";
+            triggerNotification("Hệ thống Admin", `Đã ký duyệt thành công đơn mã số ${localDatabaseStore[targetIndex].id}`);
+            renderApplicationTables();
+            refreshCoreAnalytics();
+        }
+
+        // 6. Tính toán giải thuật số liệu phân tích & hiển thị biểu đồ tự động cập nhật phần trăm
+        function refreshCoreAnalytics() {
+            const total = localDatabaseStore.length;
+            const pending = localDatabaseStore.filter(r => r.status === "Chờ duyệt").length;
+            const approved = localDatabaseStore.filter(r => r.status === "Đã xác nhận").length;
+            
+            // Tính tổng doanh thu từ các ca đã được duyệt thành công
+            const totalRevenue = localDatabaseStore.filter(r => r.status === "Đã xác nhận").reduce((acc, curr) => acc + curr.cost, 0);
+
+            // Ghi dữ liệu text số liệu lên Dashboard màn hình
+            document.getElementById("statTotal").innerText = total;
+            document.getElementById("statPending").innerText = pending;
+            document.getElementById("statApproved").innerText = approved;
+            document.getElementById("statRevenue").innerText = totalRevenue.toLocaleString('vi-VN') + "đ";
+
+            // Ghi dữ liệu số lượng lên huy hiệu badge tại Sidebar menu điều hướng
+            document.getElementById("badgeUserCount").innerText = total;
+            document.getElementById("badgePendingCount").innerText = pending;
+
+            // Xử lý logic chia tỷ lệ tính phần trăm vẽ biểu đồ thanh ngang
+            let ctTimMach = localDatabaseStore.filter(r => r.department === "Khoa Tim Mạch").length;
+            let ctNhi = localDatabaseStore.filter(r => r.department === "Khoa Nhi Khoa").length;
+            let ctRang = localDatabaseStore.filter(r => r.department === "Răng Hàm Mặt").length;
+
+            let pctTimMach = total > 0 ? Math.round((ctTimMach / total) * 100) : 0;
+            let pctNhi = total > 0 ? Math.round((ctNhi / total) * 100) : 0;
+            let pctRang = total > 0 ? Math.round((ctRang / total) * 100) : 0;
+
+            // Cập nhật thuộc tính CSS Width để thanh bar chạy mượt mà chuyển động kéo dài ra
+            document.getElementById("barTimMach").style.width = pctTimMach + "%";
+            document.getElementById("barNhi").style.width = pctNhi + "%";
+            document.getElementById("barRang").style.width = pctRang + "%";
+
+            // In số chữ hiển thị phần trăm
+            document.getElementById("valTimMach").innerText = pctTimMach + "%";
+            document.getElementById("valNhi").innerText = pctNhi + "%";
+            document.getElementById("valRang").innerText = pctRang + "%";
+        }
+
+        // 7. Thuật toán tìm kiếm và lọc dữ liệu bảng Sổ tay lịch hẹn thời gian thực (Real-time Filter)
+        function filterHistoryTable() {
+            const keyword = document.getElementById("searchHistory").value.toUpperCase();
+            const tableRows = document.getElementById("domHistoryTableBody").getElementsByTagName("tr");
+
+            for (let i = 0; i < tableRows.length; i++) {
+                let docColumn = tableRows[i].getElementsByTagName("td")[1];
+                let idColumn = tableRows[i].getElementsByTagName("td")[0];
+                
+                if (docColumn || idColumn) {
+                    let docText = docColumn.textContent || docColumn.innerText;
+                    let idText = idColumn.textContent || idColumn.innerText;
+                    
+                    if (docText.toUpperCase().indexOf(keyword) > -1 || idText.toUpperCase().indexOf(keyword) > -1) {
+                        tableRows[i].style.display = "";
+                    } else {
+                        tableRows[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // 8. Hàm điều khiển hộp thông báo bật lên ở góc phải màn hình
         function triggerNotification(title, message) {
             const toast = document.getElementById("globalToast");
             document.getElementById("toastTitle").innerText = title;
             document.getElementById("toastMsg").innerText = message;
-            toast.classList.add("active");
-            setTimeout(() => { toast.classList.remove("active"); }, 3000);
-        }
 
-        // Tạo sẵn các hàm rỗng để file khuongduy15.js hoặc hệ thống gọi không bị lỗi sập script
-        function refreshCoreAnalytics() { console.log("Hệ thống cập nhật số liệu tổng."); }
-        function renderApplicationTables() { console.log("Hệ thống vẽ lại bảng dữ liệu."); }
+            toast.classList.add("active");
+            setTimeout(() => {
+                toast.classList.remove("active");
+            }, 3500);
+        }
     </script>
-    
-    <!-- Nhúng file logic xử lý tính năng đặt lịch của Nguyễn Khương Duy -->
-    <script src="./khuongduy15.js"></script>
 </body>
 </html>
